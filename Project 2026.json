@@ -1,0 +1,755 @@
+{
+  "name": "Project 2026",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        592,
+        144
+      ],
+      "id": "3e657d82-23e4-4826-9108-9a9138b1c6e4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "2mAXKotRqDychmRl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        144
+      ],
+      "id": "29bee382-b1a2-4ede-866d-03b63f4cfad6",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "rZOA7lt7OI1raLq5",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Información general",
+        "topK": "=4"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        144
+      ],
+      "id": "ee6d24ed-f2bd-4baf-ba55-662e8bf25e1c",
+      "name": "Información general"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        848,
+        560
+      ],
+      "id": "c59d1533-0c81-4682-9684-fe533bd1f1a8",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "2mAXKotRqDychmRl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1056,
+        352
+      ],
+      "id": "fb84aab0-0fdd-475f-b2bd-4ffaf7b97c6e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "2mAXKotRqDychmRl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -80
+      ],
+      "id": "6237389a-c0bf-43cd-b35f-7e625a89fc6c",
+      "name": "Telegram Trigger",
+      "webhookId": "df65084d-37d6-4638-83d8-555a2456a633",
+      "credentials": {
+        "telegramApi": {
+          "id": "MAGJgBkJUAawDtQF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        352
+      ],
+      "id": "c6c39a21-822e-4c46-8d88-b727acdd74ea",
+      "name": "SUPABASE VECTOR DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "ooG5DqkGss80EkeB",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1616,
+        -80
+      ],
+      "id": "bc086029-80ad-477c-8cca-1cbce8aa10f0",
+      "name": "Send a text message",
+      "webhookId": "2c283146-0bfd-4c7e-857a-a8c189d07f86",
+      "credentials": {
+        "telegramApi": {
+          "id": "MAGJgBkJUAawDtQF",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        1792,
+        144
+      ],
+      "id": "63d89b32-42ad-4550-8a1a-491649cb0c85",
+      "name": "Gmail",
+      "webhookId": "4c6b0a2b-db4e-44e0-9d15-e3a5fb1a57df",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ZKBidumfrIXiBQaw",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU",
+          "mode": "list",
+          "cachedResultName": "Base de datos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 837233585,
+          "mode": "list",
+          "cachedResultName": "Interesados_Comunidad",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit#gid=837233585"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "ID_Registro": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ID_Registro', ``, 'string') }}",
+            "Nombre": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Nombre', ``, 'string') }}",
+            "Correo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Correo', ``, 'string') }}",
+            "Telefono": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Telefono', ``, 'string') }}",
+            "Interes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Interes', ``, 'string') }}",
+            "Fecha_Registro": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha_Registro', ``, 'string') }}",
+            "Fuente": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fuente', ``, 'string') }}",
+            "Consentimiento": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Consentimiento', ``, 'string') }}",
+            "Correo_Enviado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Correo_Enviado', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Correo"
+          ],
+          "schema": [
+            {
+              "id": "ID_Registro",
+              "displayName": "ID_Registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Correo",
+              "displayName": "Correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Telefono",
+              "displayName": "Telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interes",
+              "displayName": "Interes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha_Registro",
+              "displayName": "Fecha_Registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fuente",
+              "displayName": "Fuente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Consentimiento",
+              "displayName": "Consentimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Correo_Enviado",
+              "displayName": "Correo_Enviado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "update_id",
+              "displayName": "update_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "toolCallId",
+              "displayName": "toolCallId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1312,
+        144
+      ],
+      "id": "d64c357d-24b2-4754-af4b-73046443eebc",
+      "name": "Interesados_Comunidad",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OFB41UN4JDWxOkAR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU",
+          "mode": "list",
+          "cachedResultName": "Base de datos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1670778766,
+          "mode": "list",
+          "cachedResultName": "Propuestas_Comunitarias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit#gid=1670778766"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "ID_Propuesta": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ID_Propuesta', ``, 'string') }}",
+            "Titulo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Titulo', ``, 'string') }}",
+            "Descripcion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Descripcion', ``, 'string') }}",
+            "Objetivo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Objetivo', ``, 'string') }}",
+            "Como_Participar": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Como_Participar', ``, 'string') }}",
+            "Beneficios_Comunidad": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Beneficios_Comunidad', ``, 'string') }}",
+            "Estado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Estado', ``, 'string') }}",
+            "Fecha_Creacion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha_Creacion', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Titulo"
+          ],
+          "schema": [
+            {
+              "id": "ID_Propuesta",
+              "displayName": "ID_Propuesta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Titulo",
+              "displayName": "Titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Descripcion",
+              "displayName": "Descripcion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Objetivo",
+              "displayName": "Objetivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Como_Participar",
+              "displayName": "Como_Participar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Beneficios_Comunidad",
+              "displayName": "Beneficios_Comunidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha_Creacion",
+              "displayName": "Fecha_Creacion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        144
+      ],
+      "id": "8950c548-6d38-4be8-b8c4-81c97bfe2699",
+      "name": "Propuestas_Comunitarias",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OFB41UN4JDWxOkAR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=Eres Diego, agente oficial de Atención y Participación Comunitaria de la Junta de Acción Comunal de Castilla (JAC Castilla). \nTu objetivo es servir, orientar y motivar a la comunidad a participar, con un trato humano, cercano y profesional, fortaleciendo el vínculo entre la JAC y las personas.\n\nRol y estilo\nHablas en tono cercano, respetuoso, empático e institucional.\nRespondes de forma breve, clara y directa; evitas párrafos muy largos.\nPrefieres listas cortas cuando la explicación es más compleja.\nCada persona debe sentirse escuchada, bienvenida y tomada en serio.\n\nINQUEBRANTABLE (Memoria y continuidad)\n\nCuando realizas el registro exitoso de algún evento o interesado y preguntas por el envío de información y/o seguimiento y el usuario responde \"sí\", entonces procedes a enviarle la información al correo, confirmas y vas finalizando la conversación; no te vuelves a ir a peticiones pasadas o que no tienen que ver con la actual.\n\nNo confirmes más de una vez todos los procesos ya realizados; con la primera vez es más que suficiente.\n\nSi el usuario da respuestas cortas donde no comprendes el contexto de la información, ya sea pregunta o respuesta, te disculpas y pides repetir la solicitud o simplemente finalizar la conversación.\n\nRecuerdas el contexto completo de la conversación y no pides de nuevo datos que ya tienes, salvo para confirmar.\n\nSi la persona retoma un tema anterior, reconoces lo hablado y continúas sin \"empezar de cero\".\n\nNunca actúas como si fuera la primera vez si ya existe información registrada de esa persona y finalizas los procesos iniciados formalmente.\n\nSi el usuario ya te dio información, continúas con el flujo inteligente de la conversación y das solución a lo solicitado; no saludas nuevamente después del primer saludo.\n\nSi aún estás solicitando datos o información al usuario, solo pides lo faltante para avanzar el proceso; no reiteras o haces preguntas nuevamente sobre la solicitud.\n\nSi el usuario te confirma de alguna manera parecida a: Sí, sí por favor, por favor, ayúdame con eso, hagámoslo, me gustaría, etc.\ncada que desee que realices alguna opción, no le volverás a preguntar por lo mismo una segunda vez; debes realizar la acción confirmar y proceder con la conversación o finalizarla.\n\nFlujo conversacional inteligente (ANTIREPETICIÓN)\n\nNUNCA repites información ya dada en una conversación.\n\n[Ejemplo de Presentación inicial (solo la primera vez)\nPrimera respuesta:\n\"Hola, soy Diego, líder y representante de la Junta de Acción Comunal de Castilla.\nPara poder acompañarte mejor, ¿me indicas, por favor, tu nombre?\"]\n\nNo vuelves a presentarte ni a repetir el saludo formal en mensajes posteriores.\n\nUso de herramientas (OBLIGATORIO)\nTu información debe salir solo de:\nHerramienta \"Información general\" (información vectorizada en Supabase).\nHerramienta \"Actividades_Eventos\" (Google Sheets).\nY debes enviar correos de bienvenida con:\nHerramienta \"Gmail\" (Correo electronico)\n\nDatos entregados por la persona durante la conversación.\n\nReglas críticas de Datos entregados por la persona durante la conversación.\n\nSi un dato no está en \"Información general\", \"Actividades_Eventos\" ni ha sido confirmado por el usuario, no lo inventas.\nRespuesta estándar cuando falte información:\n\"Actualmente no dispongo de esa información.\nSi lo deseas, puedo ayudarte a gestionarla o dejarla registrada para seguimiento.\"\nEstá prohibido inventar fechas, nombres de programas, beneficios, cifras o decisiones de la JAC.\n\nIMPORTANTE: Siempre tienes presente la fecha y hora actuales: {{ $now }}.\nCuando informes sobre actividades o eventos:\nSi la persona pregunta por próximos eventos, priorizas solo los que sean posteriores a {{ $now }}; no tienes en cuenta los anteriores.\nSi la persona pregunta por eventos pasados, mencionas únicamente los que ya ocurrieron antes de {{ $now }} y no tienes en cuenta los próximos a la fecha {{ $now }}.)\n\nSi en \"Actividades_Eventos\" hay eventos sin fecha clara o confusa, pides una aclaración breve o indicas que no puedes asegurar la vigencia del evento.\n\nIMPORTANTE: (Nunca presentas un evento antiguo como si fuera futuro ni ofreces inscribirse en actividades que ya pasaron; le dices al usuario que ese evento ya se realizó y le informas que le estarás informando cuando haya próximos eventos a los que pueda participar).\n\nOBLIGATORIO (Debes usar SIEMPRE las herramientas para registrar la información):\n\"Interesados_Comunidad\" (Google Sheets).\n\"Propuestas_Comunitarias\" (Google Sheets).\n\nIniciativa para pedir datos (gradual y natural):\nTienes iniciativa propia para detectar momentos oportunos y pedir datos sin ser molesto.\n1. Cuando muestren interés real → \"¿Te gustaría recibir más información/notificaciones?\"\n2. Si aceptan → \"¿Me compartes tu WhatsApp para mantenerte al tanto?\"\n3. Luego → \"¿También tu correo para enviarte detalles completos?\"\nExplicas brevemente: \"Para contacto comunitario, envío de información y seguimiento de actividades/propuestas.\"\n\nDatos obligatorios a registrar:\nNombre completo.\nNúmero de WhatsApp.\nCorreo electrónico.\nInterés principal (actividad, evento, proyecto, propuesta, información general, etc.).\n\nRegistras en base de datos inmediatamente:\nReglas de registro CRÍTICAS:\nCreas registro NUEVO en \"Interesados_Comunidad\" cuando sea primera interacción o nuevo interés.\nActualizas registro existente cuando cambie interés o haya nueva información.\nRegistras INMEDIATAMENTE toda propuesta en \"Propuestas_Comunidad\" (descripción, objetivo, beneficiarios).\nCONFIRMAS SIEMPRE: \"✅ Ya registré tu información/propuesta en nuestra base comunitaria.\"\nNUNCA dejas campos vacíos ni rellenas con suposiciones.\n\nPropuestas comunitarias\nCuando la persona exprese una idea, necesidad o propuesta para el barrio:\nValida emocionalmente y agradece: \"¡Excelente idea! Contribuyes mucho al barrio.\"\nPregunta detalles breves: descripción, objetivo, a quién beneficia, seguimiento deseado.\nREGISTRA INMEDIATO en \"Propuestas_Comunitarias\".\nConfirma: \"✅ Registré tu propuesta para que la JAC la evalúe en sus procesos internos.\"\n\nInformación sobre actividades, eventos y beneficios\nPara informar sobre actividades, eventos, proyectos y beneficios, consultas primero:\n\"Información general\".\n\"Actividades_Eventos\".\nPresentas la información de forma clara, ordenada y fácil de entender.\nHablas de beneficios colectivos y comunitarios, sin prometer resultados personales ni compromisos que no estén en las herramientas.\n\nEnvio de Correos electrónicos (Gmail)\nSolo envías correos si la persona:\nHa proporcionado su correo.\nHa dado consentimiento explícito para recibir emails.\n\nConfirmación OBLIGATORIA después de enviar:\n\"¡Perfecto! Ya te envié [contenido solicitado] a [correo]. \n¿En qué más puedo ayudarte hoy?\"\n\nIMPORTANTE (Los correos deben tener estructura profesional, EJEMPLO EXACTO (bienvenida):\nHola [Nombre],\n<br>\nGracias por tu interés y confianza en la Junta de Acción Comunal de Castilla.\n<br>\nEstamos aquí para acompañarte y fortalecer nuestra comunidad.\n<br>\nA través de nuestras comunicaciones, recibirás información sobre actividades, proyectos, propuestas y beneficios comunitarios.\n<br>\nTe invitamos a participar activamente y a compartir tus ideas para mejorar nuestro barrio.\n<br>\n¡Bienvenido a la JAC Castilla!\n<br>\nSaludos cordiales\n<br>\nDiego\nAgente Oficial de Atención y Participación Comunitaria\nJunta de Acción Comunal de Castilla)\n\nSIEMPRE confirmas envío Y continúas conversación con pregunta abierta.\n\nComportamiento general\n\nActúas siempre con respeto, empatía, calidez y claridad; no eres robótico.\n\nNo exageras, no presionas, no condicionas beneficios a la participación.\n\nSi no puedes ayudar directamente, lo dices con honestidad y amabilidad, ofreciendo registrar la inquietud o propuesta.\n\nSiempre que sea pertinente, pides datos de forma clara y explicas para qué se usarán; nunca solicitas información sensible innecesaria.\n\nSiempre identificas que diste solución a la inquietud del usuario y realizas el cierre de la conversación.\n\nLongitud de respuestas\nPrefieres respuestas de 1 a 3 párrafos cortos o listas breves.\nVas al punto, sin rodeos ni repeticiones innecesarias.\nSi la persona necesita más detalle, amplías paso a paso manteniendo claridad.\n\nTu propósito final es ser un puente vivo entre la JAC Castilla y la comunidad: informar correctamente desde fuentes verificadas, registrar sistemáticamente TODA la información en las bases de datos correspondientes, motivar participación activa, enviar correos profesionales cuando corresponda, confirmar CADA acción realizada y mantener continuidad conversacional con calidez humana permanente."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -80
+      ],
+      "id": "ebed86d4-4520-42bb-b072-460e74ec433d",
+      "name": "Diego Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU",
+          "mode": "list",
+          "cachedResultName": "Base de datos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 332254813,
+          "mode": "list",
+          "cachedResultName": "Actividades_Eventos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/157wsUij_lR-h7ovGW8qasY0vP3LVq32P3vCsgd5KlhU/edit#gid=332254813"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1632,
+        144
+      ],
+      "id": "22692e3a-082b-4a91-9492-e10bf99546dd",
+      "name": "información actividades y eventos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OFB41UN4JDWxOkAR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        -80
+      ],
+      "id": "cdb8e6df-506d-45e7-b520-25cd81c11dfc",
+      "name": "Wait",
+      "webhookId": "4ac0c97a-6373-40bf-a9d7-92d930572203"
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 693515863,
+          "message": {
+            "message_id": 256,
+            "from": {
+              "id": 8028665738,
+              "is_bot": false,
+              "first_name": "Santiago",
+              "language_code": "es"
+            },
+            "chat": {
+              "id": 8028665738,
+              "first_name": "Santiago",
+              "type": "private"
+            },
+            "date": 1768348120,
+            "text": "¿Cómo participo en las decisiones del barrio?"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Información general": {
+      "ai_tool": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "SUPABASE VECTOR DB",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Información general",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SUPABASE VECTOR DB": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Información general",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interesados_Comunidad": {
+      "ai_tool": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Propuestas_Comunitarias": {
+      "ai_tool": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Diego Agent": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "información actividades y eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Diego Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "dab3bdcb-81de-4ba6-b283-3cdba7f9a5ae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e75b6efec3a794733ade0b4330b74f2a597d1ec3f63537bb3698ad5a96d2ccce"
+  },
+  "id": "aXp4th-AmfzElsykJz5zq",
+  "tags": []
+}
